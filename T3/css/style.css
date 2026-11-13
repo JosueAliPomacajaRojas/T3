@@ -1,0 +1,283 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  user-select: none;
+}
+
+body, html {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #05070a;
+  color: #fff;
+}
+
+#canvas-container {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* ================= HUD ================= */
+#hud {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Tarjetas generales */
+.hud-card {
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 10px 18px;
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(6px);
+}
+
+.hud-label {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #eab308;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+/* Barra superior fija y simétrica */
+.hud-top {
+  padding: 24px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  background: linear-gradient(to bottom, rgba(3, 7, 18, 0.8), transparent);
+}
+
+.hud-obj {
+  max-width: 440px;
+}
+
+.hud-main-text {
+  font-size: 14px;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.hud-sub-text {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 3px;
+}
+
+.hud-dist-card {
+  text-align: right;
+  min-width: 160px;
+}
+
+.dist-val {
+  font-size: 28px;
+  font-weight: 900;
+  color: #4ade80;
+  letter-spacing: 0.5px;
+  line-height: 1.1;
+  margin-top: 2px;
+}
+
+/* Retícula / Mira central y marcador de impacto */
+#crosshair {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 24px;
+  height: 24px;
+  transform: translate(-50%, -50%);
+}
+#crosshair::before, #crosshair::after {
+  content: '';
+  position: absolute;
+  background: rgba(255, 255, 255, 0.85);
+}
+#crosshair::before { top: 0; left: 11px; width: 2px; height: 24px; }
+#crosshair::after { top: 11px; left: 0; width: 24px; height: 2px; }
+
+#hitmarker {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  transform: translate(-50%, -50%) rotate(45deg);
+  border: 2px solid #ef4444;
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+#hitmarker.active { opacity: 1; }
+
+/* Notificación flotante de munición */
+#notify-box {
+  position: absolute;
+  top: 85px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid #38bdf8;
+  color: #38bdf8;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 14px;
+  box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+#notify-box.show { opacity: 1; }
+
+/* Barra inferior alineada (Arma y Munición a la derecha) */
+.hud-bottom {
+  padding: 24px 32px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  background: linear-gradient(to top, rgba(3, 7, 18, 0.85), transparent);
+}
+
+.hud-weapon-card {
+  text-align: right;
+  min-width: 220px;
+}
+
+.weapon-selector {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.weapon-tag {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 9px;
+  background: #1e293b;
+  color: #64748b;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.weapon-tag.active {
+  background: #38bdf8;
+  color: #030712;
+  border-color: #38bdf8;
+}
+
+.ammo-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+.ammo-big {
+  font-size: 40px;
+  font-weight: 900;
+  line-height: 1;
+  color: #ffffff;
+}
+.ammo-big.empty { color: #ef4444; }
+
+.ammo-max {
+  color: #94a3b8;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.weapon-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: #38bdf8;
+  margin-top: 3px;
+}
+
+/* Efecto de daño / sangre en bordes */
+#blood-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+  box-shadow: inset 0 0 100px rgba(220, 38, 38, 0);
+  transition: box-shadow 0.2s;
+}
+#blood-overlay.dead { box-shadow: inset 0 0 180px rgba(220, 38, 38, 0.95); }
+
+/* ================= MODALES Y PANTALLAS ================= */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(3, 7, 18, 0.88);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+}
+.hidden { display: none !important; }
+
+.box {
+  background: #0f172a;
+  border: 1px solid #334155;
+  padding: 32px;
+  border-radius: 12px;
+  text-align: center;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+}
+.box h1 { font-size: 28px; color: #eab308; margin-bottom: 12px; font-weight: 800; }
+.box h2 { font-size: 32px; color: #ef4444; margin-bottom: 12px; font-weight: 800; }
+.box p { font-size: 14px; color: #cbd5e1; margin-bottom: 22px; line-height: 1.5; }
+
+.controls-hint {
+  background: #1e293b;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  font-size: 13px;
+  color: #94a3b8;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  text-align: left;
+}
+.controls-hint b { color: #f8fafc; }
+
+.btn {
+  background: #eab308;
+  color: #030712;
+  font-weight: 800;
+  font-size: 16px;
+  border: none;
+  padding: 12px 32px;
+  border-radius: 6px;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: transform 0.1s, background 0.2s;
+}
+.btn:hover { background: #facc15; transform: scale(1.03); }
+.btn-green { background: #22c55e; color: #030712; }
+.btn-green:hover { background: #4ade80; }
+.btn-red { background: #ef4444; color: #fff; }
+.btn-red:hover { background: #dc2626; }

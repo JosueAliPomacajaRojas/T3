@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Operación Extracción - Left 4 Dead 2</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+
+<body>
+  <div id="canvas-container"></div>
+  <div id="blood-overlay"></div>
+
+  <!-- HUD EN PANTALLA  -->
+  <div id="hud">
+    <div class="hud-top">
+      <div class="hud-card hud-obj">
+        <div class="hud-label">OBJETIVO PRINCIPAL</div>
+        <div class="hud-main-text">Atraviesa la ciudad hacia la zona de extracción</div>
+        <div class="hud-sub-text">Ruta A: Avenida Directa &nbsp;|&nbsp; Ruta B: Callejón Alternativo</div>
+      </div>
+
+      <div class="hud-card hud-dist-card">
+        <div class="hud-label" style="color: #4ade80;">DISTANCIA EXTRACCIÓN</div>
+        <div class="dist-val" id="hud-dist">210 m</div>
+      </div>
+    </div>
+
+    <!-- Mira central y marcador de impacto -->
+    <div id="crosshair"></div>
+    <div id="hitmarker"></div>
+    <div id="notify-box">+ Munición recogida</div>
+
+    <div class="hud-bottom">
+      <div class="hud-card hud-weapon-card">
+        <div class="weapon-selector">
+          <span class="weapon-tag active" id="tag-w1">[1] ESCOPETA</span>
+          <span class="weapon-tag" id="tag-w2">[2] RIFLE M16</span>
+        </div>
+        <div class="ammo-row">
+          <span class="ammo-big" id="hud-ammo-val">8</span>
+          <span class="ammo-max" id="hud-ammo-max">/ 16</span>
+        </div>
+        <div class="weapon-name" id="hud-weapon-name">Escopeta Táctica</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANTALLA DE INICIO -->
+  <div id="start-screen" class="overlay">
+    <div class="box">
+      <h1>OPERACIÓN EXTRACCIÓN</h1>
+      <p>La ciudad está infestada. Puedes avanzar por la avenida principal o tomar el callejón alternativo. Administra
+        tus recursos y llega con vida al punto de rescate.</p>
+
+      <button id="btn-start" class="btn">COMENZAR MISIÓN</button>
+    </div>
+  </div>
+
+  <!-- PANTALLA DE VICTORIA  -->
+  <div id="victory-screen" class="overlay hidden">
+    <div class="box">
+      <h1 style="color: #4ade80;">¡MISIÓN COMPLETADA!</h1>
+      <p>Has llegado a la zona de extracción antes de ser atrapado por la horda.</p>
+      <p id="vic-stats" style="color: #94a3b8; font-size: 15px; margin-bottom: 20px;"></p>
+      <button id="btn-restart-victory" class="btn btn-green">JUGAR DE NUEVO</button>
+    </div>
+  </div>
+
+  <!-- PANTALLA DE GAME OVER -->
+  <div id="game-over-screen" class="overlay hidden">
+    <div class="box">
+      <h2>GAME OVER</h2>
+      <p>Has sido atrapado por los zombis. No lograste escapar de la zona infestada.</p>
+      <button id="btn-restart-gameover" class="btn btn-red">REINTENTAR</button>
+    </div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+
+</html>
